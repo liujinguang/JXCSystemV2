@@ -49,6 +49,46 @@ public class AbstractDao {
         return null;
 	}
 	
+	public void saveOrUpdate(Object obj) {
+		Session session = getSession();
+		Transaction tx = null;
+		
+		try {
+			tx = session.beginTransaction();
+			session.saveOrUpdate(obj);
+			tx.commit();
+			
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+	}
+	
+	public void delete(Object obj) {
+		Session session = getSession();
+		Transaction tx = null;
+		
+		try {
+			tx = session.beginTransaction();
+			session.delete(obj);
+			tx.commit();
+			
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+	}
+	
 	public List findAll(Class clazz) {
 		Session session = getSession();
 		Transaction tx = null;

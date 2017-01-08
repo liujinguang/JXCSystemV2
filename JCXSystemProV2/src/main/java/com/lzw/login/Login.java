@@ -4,8 +4,11 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 
+import com.lzw.MainFrame;
+import com.lzw.dao.UserDao;
 import com.lzw.model.User;
 
 import javax.swing.JLabel;
@@ -43,26 +46,26 @@ public class Login extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		JPanel panel = new LoginPanel();
 		contentPane.add(panel);
-		setBounds(300, 200, panel.getWidth(), panel.getHeight());
+		setBounds(300, 200, 456, 298);
 		setResizable(false);
-		
-		JLabel userLabel = new JLabel("用户名");
+
+		JLabel userLabel = new JLabel("用户名:");
 		userLabel.setBounds(80, 140, 50, 20);
 		panel.add(userLabel);
-		
+
 		userField = new JTextField();
 		userField.setBounds(155, 140, 200, 20);
 		panel.add(userField);
 		userField.setColumns(10);
-		
-		JLabel label = new JLabel("密    码");
+
+		JLabel label = new JLabel("密    码:");
 		label.setBounds(80, 170, 50, 20);
 		panel.add(label);
-		
-		passwordField = new JTextField();
+
+		passwordField = new JPasswordField();
 		passwordField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -74,15 +77,30 @@ public class Login extends JFrame {
 		passwordField.setBounds(155, 170, 200, 20);
 		panel.add(passwordField);
 		passwordField.setColumns(10);
-		
+
 		loginButton = new JButton("登录");
 		loginButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String name = userField.getText();
+				String password = passwordField.getText();
+				if (name.length() == 0 || password.length() == 0) {
+					promptLabel.setText("<html><body><p style=\"color:red;\">用户名或密码不能为空！</p></body></html>");
+				} else {
+					user = new UserDao().getUser(name, password);
+					if (user == null) {
+						promptLabel.setText("<html><body><p style=\"color:red;\">用户名或密码错误！</p></body></html>");
+					} else {
+						promptLabel.setText("");
+						dispose();
+						
+						new MainFrame();
+					}
+				}
 			}
 		});
 		loginButton.setBounds(160, 205, 70, 25);
 		panel.add(loginButton);
-		
+
 		quitButton = new JButton("退出");
 		quitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -91,9 +109,13 @@ public class Login extends JFrame {
 		});
 		quitButton.setBounds(270, 205, 70, 25);
 		panel.add(quitButton);
-//		contentPane.setSize(panel.getWidth(), panel.getHeight());
+
+		promptLabel = new JLabel("");
+		promptLabel.setBounds(155, 241, 200, 20);
+		panel.add(promptLabel);
+		// contentPane.setSize(panel.getWidth(), panel.getHeight());
 	}
-	
+
 	public static User getUser() {
 		return user;
 	}
@@ -101,12 +123,13 @@ public class Login extends JFrame {
 	public static void setUser(User user) {
 		Login.user = user;
 	}
-	
+
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField userField;
 	private JTextField passwordField;
 	private JButton loginButton;
 	private JButton quitButton;
+	private JLabel promptLabel;
 	private static User user;
 }

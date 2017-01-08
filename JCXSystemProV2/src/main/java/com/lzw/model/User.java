@@ -51,6 +51,12 @@ public class User {
 		this.authority = authority;
 	}
 
+	@Override
+	public String toString() {
+		return "ID=" + id + ", name=" + name + ", loginName=" + loginName + ", password=" + password + ", authority="
+				+ authority;
+	}
+
 	private Long id;
 	private String name;
 	private String loginName;
